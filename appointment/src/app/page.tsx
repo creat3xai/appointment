@@ -18,11 +18,12 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import TabPicker from "@/component/TabPicker";
-import { generateTimeRanges } from "@/helpers";
+import { formatDate, formatDateWithTimezone, generateTimeRanges } from "@/helpers";
 import { Button } from "@/components/ui/button";
 import MiniServiceCard from "@/component/MiniServiceCard";
 import DetailsForm from "@/component/DetailsForm";
 import { useToast } from "@/hooks/use-toast"
+import { bookAppointment } from "@/helpers/api";
 
 
 
@@ -60,21 +61,43 @@ export default function Home() {
         description:"Please select a valid timeslot",
         variant:"destructive"
       })
+      return
     }
     if (!selectedService){
       toast({
         description:"Please select a valid service",
         variant:"destructive"
       })
+      return;
+    }
+    if (!date){
+      toast({
+        description:"Please select a valid date",
+        variant:"destructive"
+      })
+      return;
     }
 
     const body = {
       selectedTimeSlot,
       selectedService,
+      date: date.toISOString(),
       details  : values
     }
-
     console.log(body)
+
+    const r = await bookAppointment(body);
+    if (r){
+      toast({
+        description:"Success",
+        variant:"default"
+      })
+    }else{
+      toast({
+        description:"Failed",
+        variant:"destructive"
+      })
+    }
   }
 
   return <>

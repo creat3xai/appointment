@@ -59,3 +59,12 @@ export function formatDate(date: Date): string {
   
     return `${month} ${day}${ordinalSuffix(day)}, ${year}`;
   }
+
+export const formatDateWithTimezone = (date: Date): string => {
+  const timezoneOffset = -date.getTimezoneOffset(); // In minutes
+  const sign = timezoneOffset >= 0 ? "+" : "-";
+  const hours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, "0");
+  const minutes = String(Math.abs(timezoneOffset) % 60).padStart(2, "0");
+
+  return `${date.toISOString().split("Z")[0]}${sign}${hours}:${minutes}`;
+};
